@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "50489057066",
+    "firebase_url": "https://myartisticroom.firebaseio.com",
+    "project_id": "myartisticroom",
+    "storage_bucket": "myartisticroom.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:50489057066:android:f9a99b5c824b3cd4a24853",
+        "android_client_info": {
+          "package_name": "com.example.myartisticroom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "50489057066-uc5opqjuac4qenv3bslghnbkvv20eh2g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmYqYUHt9mAzmkzfQmYxzp4YGgJCBPGfc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "50489057066-uc5opqjuac4qenv3bslghnbkvv20eh2g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
