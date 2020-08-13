@@ -1,4 +1,4 @@
-package com.example.myartisticroom
+package com.example.myartisticroom.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,8 +7,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.example.myartisticroom.R
 import com.example.myartisticroom.fragments.ChatsFragment
 import com.example.myartisticroom.fragments.SearchFragment
 import com.example.myartisticroom.fragments.SettingFragment
@@ -28,7 +28,10 @@ class MainActivity : AppCompatActivity() {
         val viewPager:ViewPager = findViewById(R.id.view_pager)
         val tabLayout:TabLayout = findViewById(R.id.tab_layout)
 
-        val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
+        val viewPagerAdapter =
+            ViewPagerAdapter(
+                supportFragmentManager
+            )
 
         viewPagerAdapter.addFragment(ChatsFragment(),"Chats")
         viewPagerAdapter.addFragment(SearchFragment(),"Search")
