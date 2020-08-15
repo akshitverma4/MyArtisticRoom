@@ -17,8 +17,6 @@
     <string name="sign_up">SIGN UP</string>
 
     <string name="sign_up_description_text">Enter your name, email id and password, to register with us.</string>
-    <string name="name">Name</string>
-    <string name="password">Password</string>
     <string name="email">Email</string>
 
     <string name="sign_in_description_text">Enter your name, email id and password, to register with us.</string>
@@ -46,4 +44,16 @@
     <string name="action_add_card">Add Card</string>
     <string name="hint_card_name">Card Name</string>
     <string name="add_list">Add List</string>
+    <string name="welcome_to">Welcome to</string>
+    <string name="my_artistic_room">My Artistic Room</string>
+    <string name="username1">Username</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="date_of_birth">Date Of Birth</string>
+    <string name="name">Name</string>
+    <string name="password">Password</string>
+    <string name="by_joining_you_agree_to_our_terms_of_service">By Joining, you agree to our <u>Terms of Service</u></string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="or">Or</string>
 </resources>
