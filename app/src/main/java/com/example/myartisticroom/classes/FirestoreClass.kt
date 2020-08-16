@@ -3,6 +3,7 @@ package com.example.myartisticroom.classes
 import android.util.Log
 import android.view.View
 import com.example.myartisticroom.activities.Login
+import com.example.myartisticroom.activities.MainActivity
 import com.example.myartisticroom.activities.Register
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -45,7 +46,7 @@ class FirestoreClass {
     /**
      * A function to SignIn using firebase and get the user details from Firestore Database.
      */
-    fun signInUser(activity: Login) {
+    fun signInUser(activity: MainActivity) {
 
         // Here we pass the collection name from which we wants the data.
         mFireStore.collection(Constants.USERS)

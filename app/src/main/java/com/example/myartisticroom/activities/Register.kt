@@ -88,7 +88,7 @@ class Register : AppCompatActivity() {
 
 
 
-                                val user = User(firebaseUser.uid,firstName,lastName,registeredEmail,date)
+                                val user = User(firebaseUser.uid,firstName,registeredEmail)
 
                                 // call the registerUser function of FirestoreClass to make an entry in the database.
                                 FirestoreClass().registerUser(this@Register, user)

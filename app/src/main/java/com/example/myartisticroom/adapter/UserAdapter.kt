@@ -26,17 +26,17 @@ class UserAdapter(mContext: Context, mList:List<User>, isChatChecked:Boolean
 
     class ViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
         var userName:TextView
-        var ProfileImage:CircleImageView
-        var online:CircleImageView
-        var offline:CircleImageView
-        var lastMessage:TextView
+        //var ProfileImage:CircleImageView
+        //var online:CircleImageView
+        //var offline:CircleImageView
+        //var lastMessage:TextView
 
         init {
             userName = itemView.findViewById(R.id.username1)
-            ProfileImage = itemView.findViewById(R.id.user_profile)
-            online = itemView.findViewById(R.id.online)
-            offline = itemView.findViewById(R.id.offline)
-            lastMessage = itemView.findViewById(R.id.lastMessage)
+            //ProfileImage = itemView.findViewById(R.id.user_profile)
+            //online = itemView.findViewById(R.id.online)
+            //offline = itemView.findViewById(R.id.offline)
+            //lastMessage = itemView.findViewById(R.id.lastMessage)
 
         }
 
@@ -48,12 +48,13 @@ class UserAdapter(mContext: Context, mList:List<User>, isChatChecked:Boolean
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return mList.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val user:User = mList[position]
-        //username1.text = user.name
+        holder.userName.text = user.firstName
+
 
     }
 }
