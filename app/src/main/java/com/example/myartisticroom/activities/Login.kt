@@ -40,8 +40,8 @@ class Login : AppCompatActivity() {
                         if (task.isSuccessful) {
                             // TODO (Step 2: Remove the toast message and call the FirestoreClass signInUser function to get the data of user from database. And also move the code of hiding Progress Dialog and Launching MainActivity to Success function.)
                             // Calling the FirestoreClass signInUser function to get the data of user from database.
-                            FirestoreClass().signInUser(this@Login)
-                           val intent = Intent(this@Login,MainActivity::class.java)
+                            // FirestoreClass().signInUser(this@Login)
+                            val intent = Intent(this@Login,MainActivity::class.java)
                             startActivity(intent)
                             // END
                         } else {
