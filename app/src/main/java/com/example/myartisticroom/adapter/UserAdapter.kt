@@ -72,7 +72,7 @@ class UserAdapter(mContext: Context, mList:List<User>, isChatChecked:Boolean
 
                 if (position == 0) {
                     val intent = Intent(mContext, MessageChatActivity::class.java)
-                    intent.putExtra("visit_id", user.getUID())
+                    intent.putExtra("visit_id", user.id)
                     mContext.startActivity(intent)
                 }
 

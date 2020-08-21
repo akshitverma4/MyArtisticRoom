@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.ResultReceiver
 import android.widget.Toast
 import com.example.myartisticroom.R
+import com.example.myartisticroom.classes.User
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -42,10 +43,10 @@ class MessageChatActivity : AppCompatActivity() {
 
             override fun onDataChange(p0: DataSnapshot) {
 
-                val user: Users? = p0.getValue(Users::class.java)
+                val user: User? = p0.getValue(User::class.java)
 
-                username_mchat.text = user!!.getUserName()
-                Picasso.get().load(user.getProfile()).into(profile_image_mchat)
+                //username_mchat.text = user!!.firstName
+               // Picasso.get().load(user.getProfile()).into(profile_image_mchat)
 
             }
 
@@ -136,12 +137,12 @@ class MessageChatActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
 
-        if (resultCode == 438 && resultCode == RESULT_OK && data != null && data!!.data != null) {
+        if (requestCode == 438 && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
 
 
-            val progressBar = ProgressDialog.(this)
+            /*val progressBar = ProgressDialog(this)
             progressBar.setMessage("Please Wait, image is sending...")
-            progressBar.slow()
+            progressBar.show()*/
 
             val fileUri = data.data
             val storageReference = FirebaseStorage.getInstance().reference.child("Chat Images")
@@ -149,13 +150,13 @@ class MessageChatActivity : AppCompatActivity() {
             val messageId = ref.push().key
             val filePath = storageReference.child("$messageId.jpg")
 
-            var uploadTask: StorageTask<*>
+            val uploadTask: StorageTask<*>
             uploadTask = filePath.putFile(fileUri!!)
 
             uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
 
                 if (!task.isSuccessful) {
-                    task.exception?.Let {
+                    task.exception?.let {
                         throw it
                     }
                 }
@@ -163,18 +164,19 @@ class MessageChatActivity : AppCompatActivity() {
 
             }).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val downloadUr1 = task.result
-                    val ur1 = downloadUr1.toString()
+                    val downloadUrl = task.result
+                    val url = downloadUrl.toString()
 
                     val messageHashMap = HashMap<String, Any?>()
                     messageHashMap["sender"] = firebaseUser!!.uid
                     messageHashMap["message"] = "sent you an image."
                     messageHashMap["receiver"] = userIdVisit
                     messageHashMap["isseen"] = false
-                    messageHashMap["url"] = ur1
+                    messageHashMap["url"] = url
                     messageHashMap["messageId"] = messageId
 
-                    ref.child("Chats").child(messageId!!).setValue(messageHashMap)
+                    ref.child("chats").child(messageId!!).setValue(messageHashMap)
+                    //progressBar.dismiss()
                 }
             }
 

@@ -1,9 +1,7 @@
 package com.example.myartisticroom.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -32,9 +30,7 @@ class MainActivity : AppCompatActivity() {
         val tabLayout:TabLayout = findViewById(R.id.tab_layout)
 
         val viewPagerAdapter =
-            ViewPagerAdapter(
-                supportFragmentManager
-            )
+            ViewPagerAdapter(supportFragmentManager)
 
 
         viewPagerAdapter.addFragment(ChatsFragment(),"Chats")
@@ -61,14 +57,10 @@ class MainActivity : AppCompatActivity() {
     }*/
 
     internal class ViewPagerAdapter(fragmentManager:FragmentManager)
-        : FragmentPagerAdapter(fragmentManager) {
-        private val fragments:ArrayList<Fragment>
-        private val titles:ArrayList<String>
+        : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+        private val fragments:ArrayList<Fragment> = ArrayList()
+        private val titles:ArrayList<String> = ArrayList()
 
-        init {
-            fragments = ArrayList<Fragment>()
-            titles = ArrayList<String>()
-        }
         override fun getItem(position: Int): Fragment {
             return fragments[position]
         }
