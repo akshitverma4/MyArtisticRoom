@@ -8,8 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.ResultReceiver
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.myartisticroom.R
+import com.example.myartisticroom.adapter.ChatsAdapter
 import com.example.myartisticroom.classes.User
+import com.example.myartisticroom.model.Chat
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -18,6 +22,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
@@ -28,6 +34,10 @@ class MessageChatActivity : AppCompatActivity() {
 
     var userIdVisit: String = ""
     var firebaseUser: FirebaseUser? = null
+    var chatsAdapter:ChatsAdapter? = null
+    var mChatlist:List<Chat>? = null
+    lateinit var recyclerView:RecyclerView
+    private val personCollectionRef = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +47,13 @@ class MessageChatActivity : AppCompatActivity() {
         userIdVisit = intent.getStringExtra("visit_id").toString()
         firebaseUser = FirebaseAuth.getInstance().currentUser
 
+
+        recyclerView = recycler_view_chats
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+
+
         val reference = FirebaseDatabase.getInstance().reference
             .child("Users").child(userIdVisit)
         reference.addValueEventListener(object : ValueEventListener {
@@ -44,6 +61,8 @@ class MessageChatActivity : AppCompatActivity() {
             override fun onDataChange(p0: DataSnapshot) {
 
                 val user: User? = p0.getValue(User::class.java)
+
+                retrieveMessage(firebaseUser!!.uid, userIdVisit)
 
                 //username_mchat.text = user!!.firstName
                // Picasso.get().load(user.getProfile()).into(profile_image_mchat)
@@ -54,6 +73,7 @@ class MessageChatActivity : AppCompatActivity() {
                 TODO("Not yet implemented")
             }
         })
+
 
         send_message_btn.setOnClickListener {
             val message = text_message.text.toString()
@@ -80,6 +100,8 @@ class MessageChatActivity : AppCompatActivity() {
 
         }
     }
+
+
 
     private fun sendMessageToUser(senderId: String, receiverId: String?, message: String) {
 
@@ -179,10 +201,32 @@ class MessageChatActivity : AppCompatActivity() {
                     //progressBar.dismiss()
                 }
             }
-
-
         }
+    }
+    private fun retrieveMessage(senderId: String, receiverId:String) {
+        mChatlist = ArrayList()
+        val reference = FirebaseDatabase.getInstance().reference.child("chats")
 
+        reference.addValueEventListener(object :ValueEventListener{
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                (mChatlist as ArrayList<Chat>).clear()
+                for (snapshot in p0.children)
+                {
+                    val chat = snapshot.getValue(Chat::class.java)
+                    if (chat!!.getReceiver().equals(senderId)&&chat.getSender().equals(receiverId)
+                        ||chat!!.getReceiver().equals(receiverId)&&chat.getSender().equals(senderId) )
+                    {
+                        (mChatlist as ArrayList<Chat>).add(chat)
+                    }
+                }
+                chatsAdapter = ChatsAdapter(this@MessageChatActivity,mChatlist as ArrayList<Chat>)
+                recyclerView.adapter = chatsAdapter
+            }
+        })
 
     }
 }
