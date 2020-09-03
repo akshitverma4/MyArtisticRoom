@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         viewPagerAdapter.addFragment(ChatsFragment(),"Chats")
         viewPagerAdapter.addFragment(SearchFragment(),"Search")
-        viewPagerAdapter.addFragment(SettingFragment(),"Setting")
+        viewPagerAdapter.addFragment(SettingFragment(),"Settings")
 
         viewPager.adapter = viewPagerAdapter
         tabLayout.setupWithViewPager(viewPager)

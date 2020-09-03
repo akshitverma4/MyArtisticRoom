@@ -1,10 +1,12 @@
 package com.example.myartisticroom.classes
 
+import android.app.Activity
 import android.util.Log
-import android.view.View
-import com.example.myartisticroom.activities.Login
+import android.widget.Toast
+import androidx.fragment.app.FragmentActivity
 import com.example.myartisticroom.activities.MainActivity
 import com.example.myartisticroom.activities.Register
+import com.example.myartisticroom.fragments.SettingFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -46,7 +48,7 @@ class FirestoreClass {
     /**
      * A function to SignIn using firebase and get the user details from Firestore Database.
      */
-    fun signInUser(activity: MainActivity) {
+    fun signInUser(activity: Activity) {
 
         // Here we pass the collection name from which we wants the data.
         mFireStore.collection(Constants.USERS)
@@ -64,7 +66,12 @@ class FirestoreClass {
                 val loggedInUser = document.toObject(User::class.java)!!
 
                 // Here call a function of base activity for transferring the result to it.
-                activity.signInSuccess(loggedInUser)
+
+                when (activity) {
+                    is MainActivity -> {
+                        activity.signInSuccess(loggedInUser)
+                    }
+                }
                 // END
             }
             .addOnFailureListener { e ->
@@ -82,11 +89,59 @@ class FirestoreClass {
      */
     fun getCurrentUserID(): String {
         var currentUser = FirebaseAuth.getInstance().currentUser
-        var currentUserId =""
-        if (currentUser!=null){
-            currentUserId=currentUser.uid
+        var currentUserId = ""
+        if (currentUser != null) {
+            currentUserId = currentUser.uid
         }
         return currentUserId
 
     }
+
+    fun signIn(activity: SettingFragment) {
+
+        // Here we pass the collection name from which we wants the data.
+        mFireStore.collection(Constants.USERS)
+            // The document id to get the Fields of user.
+            .document(getCurrentUserID())
+            .get()
+            .addOnSuccessListener { document ->
+
+                // TODO (STEP 3: Pass the result to base activity.)
+                // START
+                // Here we have received the document snapshot which is converted into the User Data model object.
+                val loggedInUser = document.toObject(User::class.java)!!
+
+                // Here call a function of base activity for transferring the result to it.
+
+
+                activity.setUserDataInUI(loggedInUser)
+
+                // END
+            }
+
+    }
+
+    fun updateUserProfileData(activity: SettingFragment, userHashMap: HashMap<String, Any>) {
+        mFireStore.collection(Constants.USERS) // Collection Name
+            .document(getCurrentUserID()) // Document ID
+            .update(userHashMap) // A hashmap of fields which are to be updated.
+            .addOnSuccessListener {
+                // Profile data is updated successfully.
+                Log.e(activity.javaClass.simpleName, "Profile Data updated successfully!")
+
+//                Toast.makeText(activity, "Profile updated successfully!", Toast.LENGTH_SHORT).show()
+
+                // Notify the success result.
+//                activity.profileUpdateSuccess()
+            }
+            .addOnFailureListener { e ->
+//                activity.hideProgressDialog()
+                Log.e(
+                    activity.javaClass.simpleName,
+                    "Error while creating a board.",
+                    e
+                )
+            }
+    }
+
 }

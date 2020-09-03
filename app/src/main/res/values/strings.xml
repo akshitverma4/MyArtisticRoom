@@ -57,4 +57,10 @@
     <string name="register">Register</string>
     <string name="or">Or</string>
     <string name="write_message">write message</string>
+    <string name="news_feed">News Feed</string>
+    <string name="Username">Username</string>
+    <string name="todo">TODO</string>
+    <string name="upload_image">Upload Image</string>
+    <string name="download_image">Download Image</string>
+    <string name="delete_image">Delete Image</string>
 </resources>

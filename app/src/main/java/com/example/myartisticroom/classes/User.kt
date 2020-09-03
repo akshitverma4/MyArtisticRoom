@@ -6,7 +6,8 @@ import android.os.Parcelable
 data class User(
     val id:String="",
     val firstName: String = "",
-    val email: String = ""
+    val email: String = "",
+    val image: String = ""
 ) : Parcelable {
     constructor(source: Parcel) : this(
         source.readString()!!,
@@ -19,6 +20,7 @@ data class User(
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeString(id)
         writeString(firstName)
+        writeString(image)
         writeString(email)
     }
 
