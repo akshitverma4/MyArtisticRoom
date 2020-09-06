@@ -2,18 +2,22 @@ package com.example.myartisticroom.activities
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.ResultReceiver
+import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myartisticroom.R
 import com.example.myartisticroom.adapter.ChatsAdapter
+import com.example.myartisticroom.classes.FirestoreClass
 import com.example.myartisticroom.classes.User
 import com.example.myartisticroom.model.Chat
+import com.example.myartisticroom.notifications.*
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -23,19 +27,28 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
+import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_message_chat.*
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+const val TOPIC = "/topics/myTopic"
 class MessageChatActivity : AppCompatActivity() {
 
     var userIdVisit: String = ""
     var firebaseUser: FirebaseUser? = null
     var chatsAdapter:ChatsAdapter? = null
     var mChatlist:List<Chat>? = null
+    val tokenss = "fAJKzPVJSt6VireRFr1IDG:APA91bE3sr2FSksvAKVfPcTugVy3zYzejTg2nRwQiHDhPuXU6ZwmQPa96VSSrG9XFWFLcBhudxha1kKtqpp-1Rt_QAYTYUreBcIbb9UcwhreU_SuHpLkB905mEDxM_eiYrVDgKPBBLyD"
+
+    val TAG = "MainActivity"
     lateinit var recyclerView:RecyclerView
     private val personCollectionRef = FirebaseFirestore.getInstance()
 
@@ -54,38 +67,73 @@ class MessageChatActivity : AppCompatActivity() {
 
 
 
-        val reference = FirebaseDatabase.getInstance().reference
-            .child("Users").child(userIdVisit)
-        reference.addValueEventListener(object : ValueEventListener {
+        val reference = FirebaseFirestore.getInstance().collection("users").document(userIdVisit)
+            .get()
+            .addOnSuccessListener { result ->
 
-            override fun onDataChange(p0: DataSnapshot) {
+                val user = result.toObject(User::class.java)!!
 
-                val user: User? = p0.getValue(User::class.java)
-
-                retrieveMessage(firebaseUser!!.uid, userIdVisit)
-
-                //username_mchat.text = user!!.firstName
-               // Picasso.get().load(user.getProfile()).into(profile_image_mchat)
-
+                username_mchat.text = user.firstName
             }
+        retrieveMessage(firebaseUser!!.uid,userIdVisit)
+        FirebaseService.sharedPref = getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
+            FirebaseService.token = it.token
+            val tok = it.token
+            val user = Tokens(tok)
+            FirestoreClass().firestore(user)
+            //etToken.setText(it.token)
+        }
 
-            override fun onCancelled(p0: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-        })
 
-
+        FirebaseMessaging.getInstance().subscribeToTopic(TOPIC)
         send_message_btn.setOnClickListener {
+            val refr = FirebaseFirestore.getInstance().collection("Tokens").document(userIdVisit)
+                .get()
+                .addOnSuccessListener {result ->
+                    if (result!=null){
+                        val message = "oye hoye"
+                        val title = "You have one new notification"
+
+
+                        //val mesg = "Tere bin"
+                        //val recipientToken = etToken.text.toString()
+
+                        val datta = result.toObject(Tokens::class.java)
+                        val datt = datta!!.code
+                        PushNotification(
+                            NotificationData(title, message),datt
+                            //recipientToken
+                        ).also {
+                            sendNotification(it)
+                        }
+
+                    }
+
+
+                }
+
+            //val title = text_message.text.toString()
+            //val mesg = "Tere bin"
+            //val recipientToken = etToken.text.toString()
             val message = text_message.text.toString()
 
-            if (message == "") {
+            if(title.isNotEmpty() && message.isNotEmpty()) {
+
+                sendMessageToUser(firebaseUser!!.uid, userIdVisit, message)
+
+            }
+            // val message = text_message.text.toString()
+
+            /*f (message == "") {
                 Toast.makeText(
                     this@MessageChatActivity,
                     "Please write a message",
                     Toast.LENGTH_LONG
                 ).show()
-            } else {
-                sendMessageToUser(firebaseUser!!.uid, userIdVisit, message)
+            } */else {
+                //sendMessageToUser(firebaseUser!!.uid, userIdVisit, message)
+
             }
 
             text_message.setText("")
@@ -228,5 +276,18 @@ class MessageChatActivity : AppCompatActivity() {
             }
         })
 
+    }
+
+    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val response = RetrofitInstance.api.postNotification(notification)
+            if(response.isSuccessful) {
+                //Log.d(TAG, "Response: ${Gson().toJson(response)}")
+            } else {
+                //Log.e(TAG, response.errorBody().toString())
+            }
+        } catch(e: Exception) {
+            //Log.e(TAG, e.toString())
+        }
     }
 }
