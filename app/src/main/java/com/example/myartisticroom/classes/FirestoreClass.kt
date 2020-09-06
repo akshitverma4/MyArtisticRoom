@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentActivity
 import com.example.myartisticroom.activities.MainActivity
 import com.example.myartisticroom.activities.Register
 import com.example.myartisticroom.fragments.SettingFragment
+import com.example.myartisticroom.notifications.Tokens
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -142,6 +143,14 @@ class FirestoreClass {
                     e
                 )
             }
+    }
+    fun firestore(data: Tokens){
+        mFireStore.collection("Tokens")
+            // Document ID for users fields. Here the document it is the User ID.
+            .document(getCurrentUserID())
+            // Here the userInfo are Field and the SetOption is set to merge. It is for if we wants to merge
+            .set(data, SetOptions.merge())
+
     }
 
 }
