@@ -29,20 +29,7 @@ class UserAdapter(mContext: Context, mList:List<User>, isChatChecked:Boolean
 
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var userName: TextView
-        //var ProfileImage:CircleImageView
-        //var online:CircleImageView
-        //var offline:CircleImageView
-        //var lastMessage:TextView
-
-        init {
-            userName = itemView.findViewById(R.id.username1)
-            //ProfileImage = itemView.findViewById(R.id.user_profile)
-            //online = itemView.findViewById(R.id.online)
-            //offline = itemView.findViewById(R.id.offline)
-            //lastMessage = itemView.findViewById(R.id.lastMessage)
-
-        }
+        var userName: TextView = itemView.findViewById(R.id.username1)
 
     }
 
