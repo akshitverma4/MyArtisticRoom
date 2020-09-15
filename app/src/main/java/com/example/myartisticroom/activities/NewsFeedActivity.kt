@@ -1,14 +1,23 @@
 package com.example.myartisticroom.activities
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.myartisticroom.R
+import com.example.myartisticroom.classes.DetailViewFragment
+import com.example.myartisticroom.classes.User
+import com.example.myartisticroom.model.ContentDTO
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.activity_news_feed.*
@@ -17,116 +26,43 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.util.ArrayList
 
-private const val REQUEST_CODE_IMAGE_PICK = 0
 
 class NewsFeedActivity : AppCompatActivity() {
 
-    var curFile: Uri? = null
-
-    val imageRef = Firebase.storage.reference
+    private var mUsers: List<ContentDTO>? = null
+    private var contentUidList : ArrayList<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_news_feed)
-
-        ivImage.setOnClickListener {
-            Intent(Intent.ACTION_GET_CONTENT).also {
-                it.type = "image/*"
-                startActivityForResult(it, REQUEST_CODE_IMAGE_PICK)
+        button2.setOnClickListener {
+            if(ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+                startActivity(Intent(this,AddPhotoActivity::class.java))
             }
         }
+        mUsers = ArrayList()
+        contentUidList = ArrayList()
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),1)
 
-        btnUploadImage.setOnClickListener {
-            uploadImageToStorage("myImage")
+        val firestore = FirebaseFirestore.getInstance().collection("images")
+    .get().addOnSuccessListener { result ->
+        for (document in result){
+            val dta = document.toObject(ContentDTO::class.java)
+            //val data = ArrayList<ContentDTO>()
+           // data.add(dta)
+            (mUsers as ArrayList<ContentDTO>).add(dta)
+            (contentUidList as ArrayList<String>).add(document.id)
+            val adapter = DetailViewFragment(this)
+            detailviewfragment_recyclerview.adapter = adapter
+                   detailviewfragment_recyclerview.layoutManager = LinearLayoutManager(this)
+
         }
 
-        btnDownloadImage.setOnClickListener {
-            downloadImage("myImage")
-        }
+            }
 
-        btnDeleteImage.setOnClickListener {
-            deleteImage("myImage.JPG")
-        }
-
-        listFiles()
     }
 
-    private fun listFiles() = CoroutineScope(Dispatchers.IO).launch {
-        try {
-            val images = imageRef.child("images/").listAll().await()
-            val imageUrls = mutableListOf<String>()
-            for(image in images.items) {
-                val url = image.downloadUrl.await()
-                imageUrls.add(url.toString())
-            }
-            withContext(Dispatchers.Main) {
-                val imageAdapter = ImageAdapter(imageUrls)
-                rvImages.apply {
-                    adapter = imageAdapter
-                    layoutManager = LinearLayoutManager(this@NewsFeedActivity)
-                }
-            }
-        } catch(e: Exception) {
-            withContext(Dispatchers.Main) {
-                Toast.makeText(this@NewsFeedActivity, e.message, Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    private fun deleteImage(filename: String) = CoroutineScope(Dispatchers.IO).launch {
-        try {
-            imageRef.child("images/$filename").delete().await()
-            withContext(Dispatchers.Main) {
-                Toast.makeText(this@NewsFeedActivity, "Successfully deleted image.",
-                    Toast.LENGTH_LONG).show()
-            }
-        } catch(e: Exception) {
-            withContext(Dispatchers.Main) {
-                Toast.makeText(this@NewsFeedActivity, e.message, Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    private fun downloadImage(filename: String) = CoroutineScope(Dispatchers.IO).launch {
-        try {
-            val maxDownloadSize = 5L * 1024 * 1024
-            val bytes = imageRef.child("images/$filename").getBytes(maxDownloadSize).await()
-            val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-            withContext(Dispatchers.Main) {
-                ivImage.setImageBitmap(bmp)
-            }
-        } catch(e: Exception) {
-            withContext(Dispatchers.Main) {
-                Toast.makeText(this@NewsFeedActivity, e.message, Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    private fun uploadImageToStorage(filename: String) = CoroutineScope(Dispatchers.IO).launch {
-        try {
-            curFile?.let {
-                imageRef.child("images/$filename").putFile(it).await()
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@NewsFeedActivity, "Successfully uploaded image",
-                        Toast.LENGTH_LONG).show()
-                }
-            }
-        } catch (e: Exception) {
-            withContext(Dispatchers.Main) {
-                Toast.makeText(this@NewsFeedActivity, e.message, Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_IMAGE_PICK) {
-            data?.data?.let {
-                curFile = it
-                ivImage.setImageURI(it)
-            }
-        }
-    }
 
 }
