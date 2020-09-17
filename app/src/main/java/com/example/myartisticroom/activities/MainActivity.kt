@@ -13,6 +13,7 @@ import com.example.myartisticroom.classes.User
 import com.example.myartisticroom.fragments.ChatsFragment
 import com.example.myartisticroom.fragments.SearchFragment
 import com.example.myartisticroom.fragments.SettingFragment
+import com.example.myartisticroom.newsFeed.fragment.NewsFeedFragment
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -33,10 +34,11 @@ class MainActivity : AppCompatActivity() {
             ViewPagerAdapter(supportFragmentManager)
 
 
-
+        viewPagerAdapter.addFragment(NewsFeedFragment(),"NewsFeed")
         viewPagerAdapter.addFragment(ChatsFragment(),"Chats")
         viewPagerAdapter.addFragment(SearchFragment(),"Search")
         viewPagerAdapter.addFragment(SettingFragment(),"Settings")
+
 
         viewPager.adapter = viewPagerAdapter
         tabLayout.setupWithViewPager(viewPager)

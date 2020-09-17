@@ -1,13 +1,13 @@
-package com.example.myartisticroom.activities
+package com.example.myartisticroom.newsFeed.activity
 
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import com.example.myartisticroom.R
-import com.example.myartisticroom.model.ContentDTO
+import com.example.myartisticroom.classes.User
+import com.example.myartisticroom.newsFeed.classes.NewsFeedContent
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -23,6 +23,7 @@ class AddPhotoActivity : AppCompatActivity() {
     var photoUri : Uri? = null
     var auth : FirebaseAuth? = null
     var firestore : FirebaseFirestore? = null
+    var user : ArrayList<User> = arrayListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_photo)
@@ -36,6 +37,15 @@ class AddPhotoActivity : AppCompatActivity() {
         var photoPickerIntent = Intent(Intent.ACTION_PICK)
         photoPickerIntent.type = "image/*"
         startActivityForResult(photoPickerIntent,PICK_IMAGE_FROM_ALBUM)
+        FirebaseFirestore.getInstance().collection("Tokens").document(FirebaseAuth.getInstance().currentUser!!.uid)
+            .get().addOnSuccessListener { result ->
+                if (result!=null){
+                    val dta = result.toObject(User::class.java)
+                    if (dta != null) {
+                        user.add(dta)
+                    }
+                }
+            }
 
         //add image upload event
         addphoto_btn_upload.setOnClickListener {
@@ -70,7 +80,7 @@ class AddPhotoActivity : AppCompatActivity() {
         storageRef?.putFile(photoUri!!)?.continueWithTask { task: Task<UploadTask.TaskSnapshot> ->
             return@continueWithTask storageRef.downloadUrl
         }?.addOnSuccessListener { uri ->
-            var contentDTO = ContentDTO()
+            var contentDTO = NewsFeedContent()
 
             //Insert downloadUrl of image
             contentDTO.imageUrl = uri.toString()
@@ -84,7 +94,7 @@ class AddPhotoActivity : AppCompatActivity() {
             //contentDTO.username =
 
             //Insert explain of content
-            contentDTO.explain = addphoto_edit_explain.text.toString()
+
 
             //Insert timestamp
             contentDTO.timestamp = System.currentTimeMillis()

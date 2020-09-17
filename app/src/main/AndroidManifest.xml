@@ -24,8 +24,8 @@
             </intent-filter>
 
         </service>
-        <activity android:name=".activities.NewsFeedActivity" />
-        <activity android:name=".activities.AddPhotoActivity"/>
+        <activity android:name=".newsFeed.NewsFeedActivity" />
+        <activity android:name=".newsFeed.activity.AddPhotoActivity"/>
         <activity android:name=".activities.MessageChatActivity" />
         <activity android:name=".drawing.fragment.DrawingActivity"/>
 
