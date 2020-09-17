@@ -18,7 +18,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.myartisticroom.R
-import com.example.myartisticroom.activities.NewsFeedActivity
 import com.example.myartisticroom.classes.Constants
 import com.example.myartisticroom.classes.FirestoreClass
 import com.example.myartisticroom.classes.User
@@ -51,8 +50,8 @@ class SettingFragment : Fragment() {
 
         view.newsFeedButton.setOnClickListener { view ->
             Log.d("btnSetup", "Selected")
-            val intent = Intent(activity,NewsFeedActivity::class.java)
-           startActivity(intent)
+           // val intent = Intent(activity, NewsFeedActivity::class.java)
+         //  startActivity(intent)
         }
 
         FirestoreClass().signIn(this)
