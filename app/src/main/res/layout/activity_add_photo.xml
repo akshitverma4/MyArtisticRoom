@@ -36,12 +36,13 @@
             android:layout_toRightOf="@+id/addphoto_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
         <EditText
-                android:gravity="top"
-                android:id="@+id/addphoto_edit_explainh"
-                android:hint="hint_image_content"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"/>
+            android:id="@+id/addphoto_edit_explainh"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:gravity="center|top"
+            android:hint="Caption" />
     </com.google.android.material.textfield.TextInputLayout>
     <Button
             android:id="@+id/addphoto_btn_upload"
@@ -50,5 +51,6 @@
             android:layout_below="@+id/editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
 
 </RelativeLayout>
