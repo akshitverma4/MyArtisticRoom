@@ -3,15 +3,17 @@ package com.example.myartisticroom.newsFeed.classes
 import android.os.Parcel
 import android.os.Parcelable
 
-data class NewsFeedContent(var explain : String? = null,
-                           var username:String? = null,
-                           var imageUrl : String? = null,
-                           var uid : String? = null,
-                           var userId : String? = null,
-                           var timestamp : Long? = null,
-                           var favoriteCount : Int = 0,
-                           var favorites : MutableMap<String,Boolean> = HashMap()):Parcelable {
+data class ContentDTO(var explain : String? = null,
+                      var username:String? = null,
+                      var imageUrl : String? = null,
+                      var profileUrl : String? = null,
+                      var uid : String? = null,
+                      var userId : String? = null,
+                      var timestamp : Long? = null,
+                      var favoriteCount : Int = 0,
+                      var favorites : MutableMap<String,Boolean> = HashMap()):Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readString(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
@@ -25,6 +27,7 @@ data class NewsFeedContent(var explain : String? = null,
         parcel.writeString(explain)
         parcel.writeString(username)
         parcel.writeString(imageUrl)
+        parcel.writeString(profileUrl)
         parcel.writeString(uid)
         parcel.writeString(userId)
         parcel.writeValue(timestamp)
@@ -35,12 +38,12 @@ data class NewsFeedContent(var explain : String? = null,
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<NewsFeedContent> {
-        override fun createFromParcel(parcel: Parcel): NewsFeedContent {
-            return NewsFeedContent(parcel)
+    companion object CREATOR : Parcelable.Creator<ContentDTO> {
+        override fun createFromParcel(parcel: Parcel): ContentDTO {
+            return ContentDTO(parcel)
         }
 
-        override fun newArray(size: Int): Array<NewsFeedContent?> {
+        override fun newArray(size: Int): Array<ContentDTO?> {
             return arrayOfNulls(size)
         }
     }

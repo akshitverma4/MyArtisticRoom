@@ -10,17 +10,17 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.myartisticroom.R
-import com.example.myartisticroom.classes.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-class NewsFeedAdapter(var context:Context):RecyclerView.Adapter<NewsFeedAdapter.ViewHolder>() {
-    var newsFeedContent : ArrayList<NewsFeedContent> = arrayListOf()
-    var contentUidList : ArrayList<String> = arrayListOf()
-    var user : ArrayList<User> = arrayListOf()
-    var clicked:Boolean = true
+class NewsFeedAdapter(var context:Context, var contentUidList : ArrayList<String>,
+                      var contentDTO : ArrayList<ContentDTO>):RecyclerView.Adapter<NewsFeedAdapter.ViewHolder>() {
 
-    init {
+
+
+    /*init {
+        newsFeedContent.clear()
+        contentUidList.clear()
 
         FirebaseFirestore.getInstance().collection("images").get().addOnSuccessListener { result ->
             for (document in result){
@@ -41,10 +41,10 @@ class NewsFeedAdapter(var context:Context):RecyclerView.Adapter<NewsFeedAdapter.
             }
         }
 
-    }
+    }*/
 
     override fun getItemCount(): Int {
-        return newsFeedContent.size
+        return contentDTO.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -55,24 +55,26 @@ class NewsFeedAdapter(var context:Context):RecyclerView.Adapter<NewsFeedAdapter.
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         //val info:User = user[position]
-        val data: NewsFeedContent = newsFeedContent[position]
+        val data: ContentDTO = contentDTO[position]
         Glide.with(holder.itemView).load(data.imageUrl).into(holder.image)
-        //holder.name?.text  = info.firstName
+        holder.name?.text  = data.userId
         holder.likeCount.text = data.favoriteCount.toString()
         holder.like.setOnClickListener {
+
             //This code is when the button is clicked
             Toast.makeText(context,"Clicked",Toast.LENGTH_SHORT).show()
             favoriteEvent(position)
-            /*if(clicked!=false) {
-                holder.like.setImageResource(R.drawable.ic_baseline_favorite_24)
-                clicked = false
-                if (clicked!=true)
-                { holder.like.setImageResource(R.drawable.ic_favorite_border)
-                clicked = true}
-            }*/
+           // holder.like.setImageResource(R.drawable.ic_baseline_favorite_24)
+
+
+                //clicked = false
+               // if (clicked!=true)
+                //{ holder.like.setImageResource(R.drawable.ic_favorite_border)
+                //clicked = true}
+
         }
         //This code is when the page is loaded
-        if(newsFeedContent[position].favorites.containsKey(FirebaseAuth.getInstance().currentUser?.uid)){
+        if(contentDTO[position].favorites.containsKey(FirebaseAuth.getInstance().currentUser?.uid)){
             //This is like status
             holder.like.setImageResource(R.drawable.ic_baseline_favorite_24)
 
@@ -89,6 +91,7 @@ class NewsFeedAdapter(var context:Context):RecyclerView.Adapter<NewsFeedAdapter.
         val name: TextView? = itemView.findViewById(R.id.detailviewitem_profile_textview)
         val like:ImageView = itemView.findViewById(R.id.detailviewitem_favorite_imageview)
         val likeCount: TextView = itemView.findViewById(R.id.detailviewitem_favoritecounter_textview)
+        val comment:TextView = itemView.findViewById(R.id.detailviewitem_explain_textview)
     }
 
 
@@ -99,7 +102,7 @@ class NewsFeedAdapter(var context:Context):RecyclerView.Adapter<NewsFeedAdapter.
             val uid = FirebaseAuth.getInstance().currentUser!!.uid
 
 
-            val contentDTO = transaction.get(tsDoc).toObject(NewsFeedContent::class.java)
+            val contentDTO = transaction.get(tsDoc).toObject(ContentDTO::class.java)
 
             if(contentDTO!!.favorites.containsKey(uid)){
                 //When the button is clicked
@@ -117,6 +120,7 @@ class NewsFeedAdapter(var context:Context):RecyclerView.Adapter<NewsFeedAdapter.
             transaction.set(tsDoc, contentDTO)
         }
     }
+
 
 
 

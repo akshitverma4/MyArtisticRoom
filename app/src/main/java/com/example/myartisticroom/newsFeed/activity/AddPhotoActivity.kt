@@ -5,15 +5,17 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.bumptech.glide.Glide
 import com.example.myartisticroom.R
 import com.example.myartisticroom.classes.User
-import com.example.myartisticroom.newsFeed.classes.NewsFeedContent
+import com.example.myartisticroom.newsFeed.classes.ContentDTO
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_add_photo.*
+import kotlinx.android.synthetic.main.item_image.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,7 +25,7 @@ class AddPhotoActivity : AppCompatActivity() {
     var photoUri : Uri? = null
     var auth : FirebaseAuth? = null
     var firestore : FirebaseFirestore? = null
-    var user : ArrayList<User> = arrayListOf()
+    lateinit var user:User
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_photo)
@@ -32,17 +34,20 @@ class AddPhotoActivity : AppCompatActivity() {
         storage = FirebaseStorage.getInstance()
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
+        user = User()
+
 
         //Open the album
         var photoPickerIntent = Intent(Intent.ACTION_PICK)
         photoPickerIntent.type = "image/*"
         startActivityForResult(photoPickerIntent,PICK_IMAGE_FROM_ALBUM)
-        FirebaseFirestore.getInstance().collection("Tokens").document(FirebaseAuth.getInstance().currentUser!!.uid)
+        FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().currentUser!!.uid)
             .get().addOnSuccessListener { result ->
                 if (result!=null){
                     val dta = result.toObject(User::class.java)
                     if (dta != null) {
-                        user.add(dta)
+                        user = dta
+
                     }
                 }
             }
@@ -80,7 +85,7 @@ class AddPhotoActivity : AppCompatActivity() {
         storageRef?.putFile(photoUri!!)?.continueWithTask { task: Task<UploadTask.TaskSnapshot> ->
             return@continueWithTask storageRef.downloadUrl
         }?.addOnSuccessListener { uri ->
-            var contentDTO = NewsFeedContent()
+            var contentDTO = ContentDTO()
 
             //Insert downloadUrl of image
             contentDTO.imageUrl = uri.toString()
@@ -88,13 +93,17 @@ class AddPhotoActivity : AppCompatActivity() {
             //Insert uid of user
             contentDTO.uid = auth?.currentUser?.uid
 
+            //Username
+            contentDTO.username = user.firstName
+
+            //UserImage
+            contentDTO.profileUrl = user.image
+
             //Insert userId
             contentDTO.userId = auth?.currentUser?.email
 
-            //contentDTO.username =
-
             //Insert explain of content
-
+            contentDTO.explain = addphoto_edit_explainh.text.toString()
 
             //Insert timestamp
             contentDTO.timestamp = System.currentTimeMillis()
