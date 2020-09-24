@@ -63,4 +63,6 @@
     <string name="upload_image">Upload Image</string>
     <string name="download_image">Download Image</string>
     <string name="delete_image">Delete Image</string>
+    <string name="fab_content_desc">fab_content_desc</string>
+    <string name="logout">Logout</string>
 </resources>

@@ -7,21 +7,54 @@
     android:background="@drawable/aristic_bg4"
     android:padding="16dp">
 
-
-    <TextView
-        android:id="@+id/Login_tv"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.Toolbar
+        android:layout_marginTop="40dp"
+        android:id="@+id/toolbar_sign_in_activity"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/login"
-        android:textColor="@color/colorPrimaryText"
-        android:textSize="48sp"
-        android:textStyle="bold"
+        android:paddingStart="-16dp"
+        android:paddingEnd="-16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+<!--        <TextView-->
+<!--            android:id="@+id/tv_title"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:gravity="center_horizontal"-->
+<!--            android:text=""-->
+<!--            android:textColor="@color/colorPrimaryDark"-->
+<!--            android:textSize="@dimen/toolbar_title_text_size"-->
+<!--            android:textStyle="bold" />-->
+
+        <TextView
+            android:id="@+id/Login_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/login"
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            />
+
+    </androidx.appcompat.widget.Toolbar>
+
+<!--    <TextView-->
+<!--        android:id="@+id/Login_tv"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="16dp"-->
+<!--        android:layout_marginTop="48dp"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        android:text="@string/login"-->
+<!--        android:textColor="@color/colorPrimaryText"-->
+<!--        android:textSize="48sp"-->
+<!--        android:textStyle="bold"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <LinearLayout
         android:layout_width="match_parent"

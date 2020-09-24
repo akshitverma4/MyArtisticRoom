@@ -16,20 +16,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name=".notifications.FirebaseService"
+        <activity android:name=".activities.BaseActivity" />
+
+        <service
+            android:name=".notifications.FirebaseService"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
-
         </service>
-        <activity android:name=".newsFeed.NewsFeedActivity" />
-        <activity android:name=".newsFeed.activity.AddPhotoActivity"/>
-        <activity android:name=".activities.MessageChatActivity" />
-        <activity android:name=".drawing.fragment.DrawingActivity"/>
 
-        <!--Added Because of the Federal SignIn Error during Build-->
+        <activity android:name=".newsFeed.activity.AddPhotoActivity" />
+        <activity android:name=".activities.MessageChatActivity" />
+        <activity android:name=".drawing.fragment.DrawingActivity" />
+
+        <!-- Added Because of the Federal SignIn Error during Build -->
         <activity
             android:name="com.google.firebase.auth.internal.FederatedSignInActivity"
             android:excludeFromRecents="true"
@@ -37,15 +39,13 @@
             android:launchMode="singleInstance"
             android:permission="com.google.firebase.auth.api.gms.permission.LAUNCH_FEDERATED_SIGN_IN"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            tools:replace="android:launchMode" />
-
-        <!--Set to true if your app is Standalone, that is, it does not require the handheld  app to run.-->
+            tools:replace="android:launchMode" /> <!-- Set to true if your app is Standalone, that is, it does not require the handheld  app to run. -->
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
-
-        <!--Added Because of the Federal SignIn Error during Build-->
+        <!-- Added Because of the Federal SignIn Error during Build -->
         <service android:name="com.google.firebase.components.ComponentDiscoveryService" />
+
         <meta-data
             android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
             android:value="com.google.firebase.components.ComponentRegistrar" />
@@ -54,25 +54,22 @@
             android:value="com.google.firebase.components.ComponentRegistrar" />
         <meta-data
             android:name="com.google.firebase.components:com.google.firebase.iid.Registrar"
-            android:value="com.google.firebase.components.ComponentRegistrar" />
-
-<!--        <activity android:name=".activities.Login" />-->
-<!--        <activity android:name=".activities.Register" />-->
-<!--        <activity android:name=".activities.StartActivity"/>-->
-<!--        <activity android:name=".activities.MainActivity" >-->
-
-        <activity android:name=".activities.Login" />
+            android:value="com.google.firebase.components.ComponentRegistrar" /> <!-- <activity android:name=".activities.Login" /> -->
+        <!-- <activity android:name=".activities.Register" /> -->
+        <!-- <activity android:name=".activities.StartActivity"/> -->
+        <!-- <activity android:name=".activities.MainActivity" > -->
+        <activity
+            android:name=".activities.Login"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.Register" />
         <activity android:name=".activities.MainActivity" />
         <activity android:name=".activities.StartActivity">
-
-        <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <!--SOURCE : https://developer.android.com/guide/topics/manifest/provider-element-->
+        </activity> <!-- SOURCE : https://developer.android.com/guide/topics/manifest/provider-element -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.myartisticroom.fileprovider"
@@ -83,7 +80,5 @@
                 android:resource="@xml/path" />
         </provider>
     </application>
-
-
 
 </manifest>
