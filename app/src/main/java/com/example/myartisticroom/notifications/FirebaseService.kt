@@ -12,8 +12,10 @@ import android.graphics.Color
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.example.myartisticroom.FullScreenFragment
 import com.example.myartisticroom.R
 import com.example.myartisticroom.activities.MainActivity
+import com.example.myartisticroom.activities.Splash
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import kotlin.random.Random
@@ -44,8 +46,12 @@ class FirebaseService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
+        var intent = Intent(this, MainActivity::class.java)
+        if (message.data["message"] == "sent you an image." ){
+             intent = Intent(this, Splash::class.java)
+        }
 
-        val intent = Intent(this, MainActivity::class.java)
+
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationID = Random.nextInt()
 
@@ -57,7 +63,7 @@ class FirebaseService : FirebaseMessagingService() {
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_ONE_SHOT)
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(message.data["title"])
-            .setContentText(message.data["mesg"])
+            .setContentText(message.data["message"])
             .setSmallIcon(R.drawable.ic_delete)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)

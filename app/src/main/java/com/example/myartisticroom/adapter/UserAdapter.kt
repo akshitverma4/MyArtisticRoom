@@ -15,18 +15,8 @@ import com.example.myartisticroom.activities.MessageChatActivity
 import com.example.myartisticroom.classes.User
 import de.hdodenhof.circleimageview.CircleImageView
 
-class UserAdapter(mContext: Context, mList:List<User>, isChatChecked:Boolean
+class UserAdapter(var mContext: Context, var mList:List<User>, var isChatChecked:Boolean
 ):RecyclerView.Adapter<UserAdapter.ViewHolder>() {
-    private val mContext: Context
-    private val mList: List<User>
-    private val isChatChecked: Boolean
-
-    init {
-        this.mContext = mContext
-        this.mList = mList
-        this.isChatChecked = isChatChecked
-    }
-
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var userName: TextView = itemView.findViewById(R.id.username1)

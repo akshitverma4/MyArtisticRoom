@@ -1,15 +1,3 @@
 package com.example.myartisticroom.model
 
-class Chatlist {
-    private var id:String=""
-    constructor()
-    constructor(id: String) {
-        this.id = id
-    }
-    fun getId():String?{
-        return id
-    }
-    fun setId(id: String?){
-        this.id = id!!
-    }
-}
+data class Chatlist (var id: ArrayList<String> = ArrayList<String>())
