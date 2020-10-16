@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.media.MediaScannerConnection
 import android.os.AsyncTask
 import android.os.Bundle
@@ -21,16 +22,42 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.drawToBitmap
 import androidx.core.view.get
 import com.example.myartisticroom.R
+import com.example.myartisticroom.notifications.NotificationData
+import com.example.myartisticroom.notifications.PushNotification
+import com.example.myartisticroom.notifications.RetrofitInstance
+import com.example.myartisticroom.notifications.Tokens
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_drawing.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_brush_size.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
 class DrawingActivity : AppCompatActivity() {
+
+    var userIdVisits: String = ""
+    val title = "My Artistic Room"
+    var message = "sent you an image."
+
+    // Create a storage reference from our app
+    val storageRef = FirebaseStorage.getInstance().reference
+
+    // Create a reference to "mountains.jpg"
+    val mountainsRef = storageRef.child("mountains.jpg")
+
+    // Create a reference to 'images/mountains.jpg'
+    val mountainImagesRef = storageRef.child("images/kch")
+
+    // A global variable for a user profile image URL
+    private var mProfileImageURL: String = ""
 
     private var mImageButtonCurrentPaint: ImageButton? =
             null // A variable for current color is picked from color pallet.
@@ -39,6 +66,8 @@ class DrawingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_drawing)
 
+        intent = intent
+        userIdVisits = intent.getStringExtra("visit_id").toString()
         drawing_view.setSizeForBrush(20.toFloat()) // Setting the default brush size to drawing view.
 
         /**
@@ -85,18 +114,53 @@ class DrawingActivity : AppCompatActivity() {
         }
 
         ib_save.setOnClickListener {
+            // Get the data from an ImageView as bytes
+            drawing_view.isDrawingCacheEnabled = true
+            drawing_view.buildDrawingCache()
+            //val bitmap = (drawing_view.drawable as BitmapDrawable).bitmap
+            val baos = ByteArrayOutputStream()
+            val bitmap = fl_drawing_view_container.drawToBitmap()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            val data = baos.toByteArray()
 
-            //First checking if the app is already having the permission
-            if (isReadStorageAllowed()) {
+            val uploadTask = mountainImagesRef.putBytes(data)
+            uploadTask.addOnFailureListener {
+                // Handle unsuccessful uploads
+            }.addOnSuccessListener { taskSnapshot ->
+                taskSnapshot.metadata!!.reference!!.downloadUrl
+                    .addOnSuccessListener { uri ->
+                        Log.e("Downloadable Image URL", uri.toString())
 
-                BitmapAsyncTask(getBitmapFromView(fl_drawing_view_container)).execute()
-            } else {
-
-                //If the app don't have storage access permission we will ask for it.
-                requestStoragePermission()
+                        // assign the image url to the variable.
+                        mProfileImageURL = uri.toString()
+                        // Call a function to update user details in the database.
+                        updateUserProfileData()
+                    }
+                // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
+                // ...
             }
-        }
+           }
     }
+
+    private fun updateUserProfileData() {
+
+        val userHashMap = HashMap<String, Any>()
+
+        if (mProfileImageURL.isNotEmpty())
+            {
+                userHashMap["image"] = mProfileImageURL
+                FirebaseFirestore.getInstance().collection("FullImage") // Collection Name
+                    .document(userIdVisits) // Document ID
+                    .set(userHashMap) // A hashmap of fields which are to be updated.
+                    .addOnSuccessListener {
+                       sendNotifications()
+                    }
+            }
+
+        // Update the data in the database.
+        //FireStore().updateUserProfileData(this@ProfileActivity, userHashMap)
+    }
+
 
     /**
      * This is override method and the method will be called when the user will tap on allow or deny
@@ -485,6 +549,40 @@ class DrawingActivity : AppCompatActivity() {
                 mDialog!!.dismiss()
                 mDialog = null
             }
+        }
+    }
+    private fun sendNotifications() {
+        val refr = FirebaseFirestore.getInstance().collection("Tokens").document(userIdVisits)
+            .get()
+            .addOnSuccessListener { result ->
+                if (result != null) {
+                    Toast.makeText(this, "Yo", Toast.LENGTH_LONG).show()
+
+
+                    //val mesg = "Tere bin"
+                    //val recipientToken = etToken.text.toString()
+
+                    val datta = result.toObject(Tokens::class.java)
+                    val datt = datta!!.code
+                    PushNotification(
+                        NotificationData(title, message), datt
+                        //recipientToken
+                    ).also {
+                        sendNotification(it)
+                    }
+                }
+            }
+    }
+    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val response = RetrofitInstance.api.postNotification(notification)
+            if(response.isSuccessful) {
+                //Log.d(TAG, "Response: ${Gson().toJson(response)}")
+            } else {
+                //Log.e(TAG, response.errorBody().toString())
+            }
+        } catch(e: Exception) {
+            //Log.e(TAG, e.toString())
         }
     }
 

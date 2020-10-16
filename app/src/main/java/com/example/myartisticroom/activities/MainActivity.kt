@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.example.myartisticroom.FullScreenFragment
 import com.example.myartisticroom.R
 import com.example.myartisticroom.classes.FirestoreClass
 import com.example.myartisticroom.classes.User
@@ -34,11 +35,11 @@ class MainActivity : AppCompatActivity() {
         val viewPagerAdapter =
             ViewPagerAdapter(supportFragmentManager)
 
-
+        //viewPagerAdapter.addFragment(FullScreenFragment(),"FullScreen")
         viewPagerAdapter.addFragment(NewsFeedFragment(),"NewsFeed")
-        viewPagerAdapter.addFragment(ChatsFragment(),"Chats")
+        //viewPagerAdapter.addFragment(ChatsFragment(),"Chats")
         viewPagerAdapter.addFragment(SearchFragment(),"Search")
-        viewPagerAdapter.addFragment(SettingFragment(),"Settings")
+        //viewPagerAdapter.addFragment(SettingFragment(),"Settings")
 
 
         viewPager.adapter = viewPagerAdapter

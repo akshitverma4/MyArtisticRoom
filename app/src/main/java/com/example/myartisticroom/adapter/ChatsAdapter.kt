@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.myartisticroom.R
 import com.example.myartisticroom.model.Chat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.item_image.view.*
 
 class ChatsAdapter (
     mContext:Context,
@@ -60,13 +62,16 @@ class ChatsAdapter (
             {
                 holder.show_text_message!!.visibility = View.GONE
                 holder.right_image_view!!.visibility = View.VISIBLE
-                Picasso.get().load(chat.getUrl()).into(holder.right_image_view)
+                //Picasso.get().load(chat.getUrl()).into(holder.right_image_view)
+                mContext?.let { Glide.with(it).load(chat.getUrl()).into(holder.right_image_view!!) }
+
             }
             else if (!mChatList?.get(position)!!.getSender().equals(firebaseUser!!.uid))
             {
                 holder.show_text_message!!.visibility = View.GONE
                 holder.left_image_view!!.visibility = View.VISIBLE
-                Picasso.get().load(chat.getUrl()).into(holder.left_image_view)
+                //Picasso.get().load(chat.getUrl()).into(holder.left_image_view)
+                mContext?.let { Glide.with(it).load(chat.getUrl()).into(holder.left_image_view!!) }
             }
         }
         else{

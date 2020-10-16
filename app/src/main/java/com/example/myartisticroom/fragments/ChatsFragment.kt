@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myartisticroom.R
@@ -50,28 +51,20 @@ class ChatsFragment : Fragment() {
         //recyclerView.layoutManager = LinearLayoutManager(context)
         //retrieveChatLists()
         //firebaseUser = FirebaseAuth.getInstance().currentUser
-        view.floatingActionButton2.setOnClickListener {
-            val intent = Intent(activity,DrawingActivity::class.java)
-            startActivity(intent)
-        }
+
 
         userChatlist =ArrayList()
-
-        val ref = FirebaseDatabase.getInstance().reference.child("chatsLists").child(firebaseUser!!.uid)
-        ref.addValueEventListener(object : ValueEventListener{
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onDataChange(p0: DataSnapshot) {
-                //(userChatlist as ArrayList).clear()
-                for (dataSnapshot in p0.children){
-                    val chatlist = dataSnapshot.getValue(Chatlist::class.java)
-                    (userChatlist as ArrayList).add(chatlist!!)
+        val refs = FirebaseFirestore.getInstance().collection("chatlist").get()
+            .addOnSuccessListener { result ->
+                for(snapshot in result){
+                    Toast.makeText(activity,"Yo",Toast.LENGTH_SHORT).show()
+                    val chatlist =snapshot.toObject(Chatlist::class.java)
+                    (userChatlist as ArrayList).add(chatlist)
                 }
                 retrieveChatLists()
             }
-        })
+
+
         updateToken(FirebaseInstanceId.getInstance().id)
         return view
     }
@@ -93,7 +86,7 @@ class ChatsFragment : Fragment() {
                 for (document in result) {
                     val boards = document.toObject(User::class.java)
                     for (eachChatList in userChatlist!!) {
-                        if (boards.id.equals(eachChatList.getId())) {
+                        if (boards.id.equals(eachChatList.id)) {
                             (mUsers as ArrayList<User>).add(boards)
                             userAdapter = UserAdapter(context!!, mUsers!!, false)
                             recycler_view_chatlist.adapter = userAdapter

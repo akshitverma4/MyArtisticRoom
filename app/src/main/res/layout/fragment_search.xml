@@ -6,8 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".fragments.SearchFragment">
 
+    <EditText
+        android:id="@+id/searchEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="Enter UserName"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search"
+        android:layout_below="@+id/searchEditText"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

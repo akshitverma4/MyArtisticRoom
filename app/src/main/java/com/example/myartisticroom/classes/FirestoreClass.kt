@@ -152,5 +152,4 @@ class FirestoreClass {
             .set(data, SetOptions.merge())
 
     }
-
 }
