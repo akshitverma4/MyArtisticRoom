@@ -20,22 +20,47 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-class Register : AppCompatActivity() {
+class Register : BaseActivity() {
 
     private lateinit var auth: FirebaseAuth
+
+    var registeredEmail:String? = null
+
+    var firstName:String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+
+        setupActionBar()
+
         auth = FirebaseAuth.getInstance()
         signup.setOnClickListener {
             registerUser()
         }
     }
+
+    /**
+     * A function for actionBar Setup.
+     */
+    private fun setupActionBar() {
+
+        setSupportActionBar(toolbar_sign_up_activity)
+
+        val actionBar = supportActionBar
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true)
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
+        }
+
+        toolbar_sign_up_activity.setNavigationOnClickListener { onBackPressed() }
+
+    }
+
     private fun registerUser() {
 
         val email = UsernameTextField.text.toString()
-        val firstName: String = FirstNameTextField.text.toString().trim { it <= ' ' }
+         firstName = FirstNameTextField.text.toString()
         val lastName: String = LastNameTextField.text.toString().trim { it <= ' ' }
         val date: String = et_date.text.toString().trim { it <= ' ' }
         val password = PasswordTextField.text.toString()
@@ -72,30 +97,31 @@ class Register : AppCompatActivity() {
         }*/
 
         if (email.isNotEmpty() && password.isNotEmpty())
+            showProgressDialog(resources.getString(R.string.please_wait))
 
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(
-                        OnCompleteListener<AuthResult> { task ->
+                    auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
 
-                            // If the registration is successfully done
-                            if (task.isSuccessful) {
+                        hideProgressDialog()
 
-                                // Firebase registered user
-                                val firebaseUser: FirebaseUser = task.result!!.user!!
-                                // Registered Email
-                                val registeredEmail = firebaseUser.email!!
+                        // If the registration is successfully done
+                        if (task.isSuccessful) {
+
+                            // Firebase registered user
+                            val firebaseUser: FirebaseUser = task.result!!.user!!
+                            // Registered Email
+                             registeredEmail = firebaseUser.email!!
 
 
+                            val user = User(firebaseUser.uid, firstName!!, registeredEmail!!)
 
-                                val user = User(firebaseUser.uid,firstName,registeredEmail)
+                            // call the registerUser function of FirestoreClass to make an entry in the database.
+                            FirestoreClass().registerUser(this@Register, user)
+                        } else {
 
-                                // call the registerUser function of FirestoreClass to make an entry in the database.
-                                FirestoreClass().registerUser(this@Register, user)
-                            } else {
-
-                            }
-                        }).await()
+                        }
+                    }.await()
 
                     withContext(Dispatchers.Main)
                     {
@@ -112,10 +138,15 @@ class Register : AppCompatActivity() {
             }
     }
     fun userRegisteredSuccess() {
+//        Toast.makeText(
+//            this,
+//            "${auth.currentUser?.email}You have successfully registered.",
+//            Toast.LENGTH_SHORT
+//        ).show()
 
         Toast.makeText(
             this,
-            "You have successfully registered.",
+            "${firstName} You have successfully registered with email id $registeredEmail.",
             Toast.LENGTH_SHORT
         ).show()
     }

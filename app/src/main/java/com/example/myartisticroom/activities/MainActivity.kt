@@ -16,6 +16,7 @@ import com.example.myartisticroom.fragments.SearchFragment
 import com.example.myartisticroom.fragments.SettingFragment
 import com.example.myartisticroom.newsFeed.fragment.NewsFeedFragment
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -44,6 +45,11 @@ class MainActivity : AppCompatActivity() {
         viewPager.adapter = viewPagerAdapter
         tabLayout.setupWithViewPager(viewPager)
         FirestoreClass().signInUser(this)
+
+        btn_logout.setOnClickListener{
+            FirebaseAuth.getInstance().signOut()
+            finish()
+        }
 
     }
 

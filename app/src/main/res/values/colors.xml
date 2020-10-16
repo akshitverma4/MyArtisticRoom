@@ -23,5 +23,8 @@
     <color name="random">#A349B1</color>
 
     <color name="colorAccent">#60b336</color>
+
+    <color name="snackbar_error_color">#FF0000</color>
+
 </resources>
 

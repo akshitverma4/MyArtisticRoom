@@ -18,9 +18,14 @@
         android:id="@+id/floatingActionButton2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:src="@drawable/ic_save"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_save"
+        app:elevation="6dp"
+        app:maxImageSize="32dp"
+        app:rippleColor="@color/colorAccent" />
 
 </RelativeLayout>

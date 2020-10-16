@@ -63,5 +63,7 @@
     <string name="upload_image">Upload Image</string>
     <string name="download_image">Download Image</string>
     <string name="delete_image">Delete Image</string>
+ simu/notifications_fixed
     <string name="title_activity_splash">Splash</string>
+
 </resources>
