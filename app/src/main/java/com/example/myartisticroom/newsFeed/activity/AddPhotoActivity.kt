@@ -38,7 +38,7 @@ class AddPhotoActivity : AppCompatActivity() {
 
 
         //Open the album
-        var photoPickerIntent = Intent(Intent.ACTION_PICK)
+        val photoPickerIntent = Intent(Intent.ACTION_PICK)
         photoPickerIntent.type = "image/*"
         startActivityForResult(photoPickerIntent,PICK_IMAGE_FROM_ALBUM)
         FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().currentUser!!.uid)

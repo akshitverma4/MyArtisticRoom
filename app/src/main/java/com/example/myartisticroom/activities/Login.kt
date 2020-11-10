@@ -26,10 +26,15 @@ class Login : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
+        auth = FirebaseAuth.getInstance()
+if (auth.currentUser?.uid != null)
+{
+    val intent = Intent(this,MainActivity::class.java)
+    startActivity(intent)
+}
         setupActionBar()
 
-        auth = FirebaseAuth.getInstance()
+
 
         login.setOnClickListener {
             loginUser()

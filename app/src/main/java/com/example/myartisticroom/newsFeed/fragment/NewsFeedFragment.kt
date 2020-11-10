@@ -56,14 +56,14 @@ class NewsFeedFragment : Fragment() {
 
 
             firestore?.collection("images")?.orderBy("timestamp",Query.Direction.DESCENDING)
-                ?.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                ?.addSnapshotListener { querySnapshot, _ ->
                     contentDTOs.clear()
                     contentUidList.clear()
                     //Sometimes, This code return null of querySnapshot when it signout
                     if (querySnapshot == null) return@addSnapshotListener
 
-                    for (snapshot in querySnapshot!!.documents) {
-                        var item = snapshot.toObject(ContentDTO::class.java)
+                    for (snapshot in querySnapshot.documents) {
+                        val item = snapshot.toObject(ContentDTO::class.java)
                         contentDTOs.add(item!!)
                         contentUidList.add(snapshot.id)
                     }

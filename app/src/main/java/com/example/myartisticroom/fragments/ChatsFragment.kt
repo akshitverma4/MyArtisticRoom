@@ -35,8 +35,7 @@ class ChatsFragment : Fragment() {
     private var userChatlist:List<Chatlist>? = null
     //private val personCollectionRef = FirebaseFirestore.getInstance()
     private var firebaseUser:FirebaseUser? = FirebaseAuth.getInstance().currentUser
-
-    //lateinit var recyclerView:RecyclerView
+    lateinit var recyclerView:RecyclerView
 
 
     override fun onCreateView(
@@ -46,35 +45,32 @@ class ChatsFragment : Fragment() {
         // Inflate the layout for this fragment
 
         val view =  inflater.inflate(R.layout.fragment_chats, container, false)
-        // recyclerView = recycler_view_chatlist
-        //recyclerView.setHasFixedSize(true)
-        //recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView = view.recycler_view_chatlist
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(context)
         //retrieveChatLists()
-        //firebaseUser = FirebaseAuth.getInstance().currentUser
+        firebaseUser = FirebaseAuth.getInstance().currentUser
 
 
         userChatlist =ArrayList()
-        val refs = FirebaseFirestore.getInstance().collection("chatlist").get()
-            .addOnSuccessListener { result ->
-                for(snapshot in result){
-                    Toast.makeText(activity,"Yo",Toast.LENGTH_SHORT).show()
-                    val chatlist =snapshot.toObject(Chatlist::class.java)
-                    (userChatlist as ArrayList).add(chatlist)
+        val refs = firebaseUser?.uid?.let {
+            FirebaseFirestore.getInstance().collection("chatlist").document(it).get()
+                .addOnSuccessListener { result ->
+                    if(result!=null){
+                        Toast.makeText(activity,"Yo",Toast.LENGTH_SHORT).show()
+                        val chatlist =result.toObject(Chatlist::class.java)
+                        if (chatlist != null) {
+                            (userChatlist as ArrayList).add(chatlist)
+                        }
+                    }
+                    retrieveChatLists()
                 }
-                retrieveChatLists()
-            }
+        }
 
 
-        updateToken(FirebaseInstanceId.getInstance().id)
         return view
     }
 
-    private fun updateToken(id: String) {
-        val refr = FirebaseDatabase.getInstance().reference.child("Tokens")
-        val token1 = Tokens(id)
-        refr.child(firebaseUser!!.uid).setValue(token1)
-
-    }
 
     private fun retrieveChatLists(){
 
