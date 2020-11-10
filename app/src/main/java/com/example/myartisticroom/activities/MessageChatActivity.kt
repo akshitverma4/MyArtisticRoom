@@ -26,6 +26,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
@@ -203,8 +204,10 @@ val chatlist = Chatlist(data)
             .set(messageHashMap)
             .addOnSuccessListener  { result ->
                           var refr = firebaseUser?.uid?.let {
-                              FirebaseFirestore.getInstance().collection("chatlist")
-                                  .document(it).set(chatlist, SetOptions.merge())
+                              FirebaseFirestore.getInstance().collection("users")
+                                  .document(it)
+                                  .update("ids",FieldValue.arrayUnion(chatlist))
+
                           }
 
 

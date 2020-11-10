@@ -6,7 +6,6 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.myartisticroom.R
-import com.example.myartisticroom.model.Chat
 import com.example.myartisticroom.model.Image
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -19,12 +18,10 @@ class Splash : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
+        window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+
         val firestore = FirebaseFirestore.getInstance().collection("FullImage").document(firebase).get()
-            .addOnSuccessListener {result ->
+            .addOnSuccessListener { result ->
                 if(result!=null){
                     val data = result.toObject(Image::class.java)
                     if (data != null) {
@@ -33,7 +30,7 @@ class Splash : AppCompatActivity() {
                 }
             }
         toMainScreen.setOnClickListener {
-            val intent = Intent(this,MainActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
     }

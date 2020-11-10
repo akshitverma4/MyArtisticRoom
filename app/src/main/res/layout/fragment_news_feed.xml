@@ -18,7 +18,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:contentDescription="@string/fab_content_desc"
         app:elevation="6dp"
         app:maxImageSize="32dp"
         app:rippleColor="@color/colorAccent"
