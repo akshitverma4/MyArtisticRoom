@@ -27,11 +27,7 @@ class Login : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         auth = FirebaseAuth.getInstance()
-if (auth.currentUser?.uid != null)
-{
-    val intent = Intent(this,MainActivity::class.java)
-    startActivity(intent)
-}
+
         setupActionBar()
 
 
@@ -71,8 +67,8 @@ if (auth.currentUser?.uid != null)
                             // TODO (Step 2: Remove the toast message and call the FirestoreClass signInUser function to get the data of user from database. And also move the code of hiding Progress Dialog and Launching MainActivity to Success function.)
                             // Calling the FirestoreClass signInUser function to get the data of user from database.
                             // FirestoreClass().signInUser(this@Login)
-                            val intent = Intent(this@Login, MainActivity::class.java)
-                            startActivity(intent)
+                            //val intent = Intent(this@Login, MainActivity::class.java)
+                            //startActivity(intent)
                             // END
                         } else {
 
@@ -81,7 +77,16 @@ if (auth.currentUser?.uid != null)
                     withContext(Dispatchers.Main) {
                         val user = auth.currentUser
                         if (user!!.isEmailVerified) {
-
+                        val intent = Intent(this@Login, MainActivity::class.java)
+                            startActivity(intent)
+                        }
+                        else
+                        {
+                            Toast.makeText(
+                                this@Login,
+                                "Please Verify your Email Address",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
 

@@ -8,13 +8,19 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_start.*
 
 class StartActivity : AppCompatActivity() {
+    lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
-        if (FirebaseAuth.getInstance().currentUser?.uid!=null)
-        {
-            val intent = Intent(this,MainActivity::class.java)
-            startActivity(intent)
+        auth = FirebaseAuth.getInstance()
+        if (FirebaseAuth.getInstance().currentUser?.uid!=null) {
+            if (auth.currentUser!!.isEmailVerified) {
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
+            else{
+                
+            }
         }
         else{
 

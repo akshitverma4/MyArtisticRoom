@@ -94,7 +94,7 @@ class ChatsAdapter (
             profile = itemView.findViewById(R.id.profile)
             show_text_message = itemView.findViewById(R.id.show_text_message)
             left_image_view = itemView.findViewById(R.id.left_image_view)
-            text_seen = itemView.findViewById(R.id.text_seen)
+            //text_seen = itemView.findViewById(R.id.text_seen)
             right_image_view = itemView.findViewById(R.id.right_image_view)
         }
     }

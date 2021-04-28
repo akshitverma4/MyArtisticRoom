@@ -1,6 +1,8 @@
+
 package com.example.myartisticroom.activities
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -37,7 +39,7 @@ class MainActivity : AppCompatActivity() {
 
         //viewPagerAdapter.addFragment(FullScreenFragment(),"FullScreen")
         viewPagerAdapter.addFragment(NewsFeedFragment(),"NewsFeed")
-        viewPagerAdapter.addFragment(ChatsFragment(),"Chats")
+        //viewPagerAdapter.addFragment(ChatsFragment(),"Chats")
         viewPagerAdapter.addFragment(SearchFragment(),"Search")
         //viewPagerAdapter.addFragment(SettingFragment(),"Settings")
 
@@ -49,6 +51,9 @@ class MainActivity : AppCompatActivity() {
         btn_logout.setOnClickListener{
             FirebaseAuth.getInstance().signOut()
             finish()
+        }
+        profile_image.setOnClickListener {
+Toast.makeText(this,"Profile",Toast.LENGTH_SHORT).show()
         }
 
     }
