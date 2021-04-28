@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.myartisticroom.R
 import com.example.myartisticroom.adapter.ChatsAdapter
 import com.example.myartisticroom.classes.FirestoreClass
@@ -66,7 +67,10 @@ class MessageChatActivity : AppCompatActivity() {
 
         recyclerView = recycler_view_chats
         recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        val layoutManager = LinearLayoutManager(this)
+        layoutManager.stackFromEnd = true
+        recyclerView.layoutManager = layoutManager
+
 
 
 
@@ -77,6 +81,10 @@ class MessageChatActivity : AppCompatActivity() {
                 val user = result.toObject(User::class.java)!!
 
                 username_mchat.text = user.firstName
+                Glide.
+                     with(this)
+                    .load(user.image)
+                    .into(profile_image_mchat)
             }
         retrieveMessage(firebaseUser!!.uid,userIdVisit)
         FirebaseService.sharedPref = getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
@@ -91,35 +99,38 @@ class MessageChatActivity : AppCompatActivity() {
 
         //FirebaseMessaging.getInstance().subscribeToTopic(TOPIC)
 
+        
 
         send_message_btn.setOnClickListener {
-            val refr = FirebaseFirestore.getInstance().collection("Tokens").document(userIdVisit)
-                .get()
-                .addOnSuccessListener {result ->
-                    if (result!=null){
-                        Toast.makeText(this,"Yo",Toast.LENGTH_LONG).show()
-                        val message = mess
-                        val title = "My Artistic Room"
+            if (text_message.text.isEmpty())
+            {
+                Toast.makeText(this,"please enter text",Toast.LENGTH_SHORT).show()
+            }
+            else {
+                val refr =
+                    FirebaseFirestore.getInstance().collection("Tokens").document(userIdVisit)
+                        .get()
+                        .addOnSuccessListener { result ->
+                            if (result != null) {
+                                Toast.makeText(this, "Yo", Toast.LENGTH_LONG).show()
+                                val message = mess
+                                val title = "My Artistic Room"
 
 
-                        //val mesg = "Tere bin"
-                        //val recipientToken = etToken.text.toString()
+                                //val mesg = "Tere bin"
+                                //val recipientToken = etToken.text.toString()
 
-                        val datta = result.toObject(Tokens::class.java)
-                        datt = datta!!.code
-                        PushNotification(
-                            NotificationData(title, message),datt
-                            //recipientToken
-                        ).also {
-                            sendNotification(it)
+                                val datta = result.toObject(Tokens::class.java)
+                                datt = datta!!.code
+                                PushNotification(
+                                    NotificationData(title, message), datt
+                                    //recipientToken
+                                ).also {
+                                    sendNotification(it)
+                                }
+                            }
                         }
-
-                        
-
-                    }
-
-
-                }
+            }
 
             //val title = text_message.text.toString()
             //val mesg = "Tere bin"

@@ -50,6 +50,7 @@
         android:layout_below="@id/barLayout_message_chat"
         android:background="#fff"
         android:layout_above="@id/relative_layout_bottom"
+        app:stackFromEnd="true"
         />
 
     <RelativeLayout

@@ -1,16 +1,12 @@
 package com.example.myartisticroom.activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
-import android.view.View
 import android.widget.Toast
 import com.example.myartisticroom.R
 import com.example.myartisticroom.classes.FirestoreClass
 import com.example.myartisticroom.classes.User
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_register.*
@@ -53,7 +49,10 @@ class Register : BaseActivity() {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
         }
 
-        toolbar_sign_up_activity.setNavigationOnClickListener { onBackPressed() }
+        toolbar_sign_up_activity.setNavigationOnClickListener {
+            onBackPressed()
+            finish()
+        }
 
     }
 
@@ -62,15 +61,19 @@ class Register : BaseActivity() {
         val email = UsernameTextField.text.toString()
          firstName = FirstNameTextField.text.toString()
         val lastName: String = LastNameTextField.text.toString().trim { it <= ' ' }
-        val date: String = et_date.text.toString().trim { it <= ' ' }
-        val password = PasswordTextField.text.toString()
+        val password = ConfirmPasswordTextField.text.toString()
 
         if (FirstNameTextField.text.toString().isEmpty()) {
-            FirstNameTextField.error = "Please enter name"
+            FirstNameTextField.error = "Please enter First name"
             FirstNameTextField.requestFocus()
             return
         }
 
+        if (LastNameTextField.text.toString().isEmpty()) {
+            LastNameTextField.error = "Please enter Last name"
+            LastNameTextField.requestFocus()
+            return
+        }
 
 
         if (!Patterns.EMAIL_ADDRESS.matcher(UsernameTextField.text.toString()).matches()) {
@@ -79,22 +82,18 @@ class Register : BaseActivity() {
             return
         }
 
-        if (LastNameTextField.text.toString().isEmpty()) {
-            LastNameTextField.error = "Please enter name"
-            LastNameTextField.requestFocus()
-            return
-        }
+
         if (PasswordTextField.text.toString().isEmpty()) {
             PasswordTextField.error = "Please enter password"
             PasswordTextField.requestFocus()
             return
         }
 
-        /*if (ConfirmTextField.text.toString() != PasswordTextField.text.toString()) {
-            ConfirmTextField.error = "Password and Confirm password should be same"
-            ConfirmTextField.requestFocus()
+        if (ConfirmPasswordTextField.text.toString() != ConfirmPasswordTextField.text.toString()) {
+            ConfirmPasswordTextField.error = "Password and Confirm password should be same"
+            ConfirmPasswordTextField.requestFocus()
             return
-        }*/
+        }
 
         if (email.isNotEmpty() && password.isNotEmpty())
             showProgressDialog(resources.getString(R.string.please_wait))
@@ -114,10 +113,10 @@ class Register : BaseActivity() {
                              registeredEmail = firebaseUser.email!!
 
 
-                            val user = User(firebaseUser.uid, firstName!!, registeredEmail!!)
+                            val user = User(firebaseUser.uid, firstName!!, lastName, registeredEmail!!)
 
                             // call the registerUser function of FirestoreClass to make an entry in the database.
-                            FirestoreClass().registerUser(this@Register, user)
+                              FirestoreClass().registerUser(this@Register, user)
                         } else {
 
                         }
@@ -129,6 +128,7 @@ class Register : BaseActivity() {
                         user!!.sendEmailVerification()
                        val intent = Intent(this@Register,Login::class.java)
                         startActivity(intent)
+                        finish()
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {

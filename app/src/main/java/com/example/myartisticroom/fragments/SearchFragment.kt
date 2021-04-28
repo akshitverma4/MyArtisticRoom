@@ -16,6 +16,7 @@ import com.example.myartisticroom.classes.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.fragment_search.view.*
@@ -66,9 +67,7 @@ class SearchFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val currentUsersId = FirebaseAuth.getInstance().currentUser!!.uid
-                val querySnapshot = personCollectionRef.collection("users")
-
-                    .get()
+                val querySnapshot = personCollectionRef.collection("users").get()
                     .addOnSuccessListener { result ->
                         (mUsers as ArrayList<User>).clear()
                         if (searchEditText.text!=null){
