@@ -8,7 +8,6 @@
 <img src="https://github.com/simu13/MyArtisticRoom/blob/master/5.png" width="300" >
 <img src="https://github.com/simu13/MyArtisticRoom/blob/master/6.png" width="300" >
 <img src="https://github.com/simu13/MyArtisticRoom/blob/master/7.png" width="300" >
-<img src="https://github.com/simu13/MyArtisticRoom/blob/master/8.png" width="300" >
 <img src="https://github.com/simu13/MyArtisticRoom/blob/master/9.png" width="300" >
 <img src="https://github.com/simu13/MyArtisticRoom/blob/master/10.png" width="300" >
 
